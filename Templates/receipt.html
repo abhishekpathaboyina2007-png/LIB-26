@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Library Receipt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --blue:#4361ee; --blue-dark:#3451d1; --blue-soft:#eef0fd; --green:#2dc653; --green-soft:#e8f9ed; --red:#f03e3e; --red-soft:#fff0f0; --text:#1a1f36; --sub:#6b7694; --border:#e8eaf2; --bg:#f4f6fb; --white:#ffffff; --radius:16px; }
+    body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px; }
+    body::before { content:''; position:fixed; top:-80px; right:-80px; width:350px; height:350px; background:radial-gradient(circle,#c7cef9 0%,transparent 70%); border-radius:50%; pointer-events:none; z-index:0; }
+    .receipt-wrap { width:100%; max-width:520px; position:relative; z-index:1; animation:floatUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes floatUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    .receipt-card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; box-shadow:0 8px 40px rgba(67,97,238,0.1); }
+    /* HEADER */
+    .rc-header { background:linear-gradient(135deg,var(--blue),#7c3aed); padding:28px 28px 24px; }
+    .rc-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .rc-logo { display:flex; align-items:center; gap:10px; }
+    .rc-logo-icon { width:36px; height:36px; background:rgba(255,255,255,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .rc-logo-name { font-size:16px; font-weight:800; color:white; }
+    .rc-status { padding:5px 12px; border-radius:20px; font-size:11px; font-weight:700; }
+    .rc-status.issued   { background:rgba(255,255,255,0.2); color:white; }
+    .rc-status.returned { background:rgba(45,198,83,0.3); color:#a7f3c8; }
+    .rc-title { font-size:22px; font-weight:800; color:white; margin-bottom:4px; }
+    .rc-sub   { font-size:13px; color:rgba(255,255,255,0.7); }
+    /* BODY */
+    .rc-body { padding:24px 28px; }
+    .rc-row { display:flex; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--border); }
+    .rc-row:last-of-type { border-bottom:none; }
+    .rc-row .lbl { font-size:12px; font-weight:700; color:var(--sub); text-transform:uppercase; letter-spacing:0.5px; }
+    .rc-row .val { font-size:14px; font-weight:600; color:var(--text); text-align:right; }
+    .rc-row .val.fine { color:var(--red); }
+    .rc-row .val.clear { color:var(--green); }
+    /* DIVIDER */
+    .rc-divider { border:none; border-top:2px dashed var(--border); margin:4px 0; }
+    /* FOOTER */
+    .rc-footer { padding:0 28px 28px; display:flex; flex-direction:column; gap:10px; }
+    .btn-download {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      padding:14px; background:var(--blue); color:white; border-radius:12px;
+      text-decoration:none; font-size:15px; font-weight:700;
+      transition:background 0.2s,transform 0.15s,box-shadow 0.2s;
+    }
+    .btn-download:hover { background:var(--blue-dark); transform:translateY(-2px); box-shadow:0 8px 20px rgba(67,97,238,0.25); }
+    .btn-back { display:flex; align-items:center; justify-content:center; gap:6px; padding:12px; background:var(--bg); color:var(--sub); border-radius:12px; text-decoration:none; font-size:13px; font-weight:600; border:1px solid var(--border); transition:all 0.2s; }
+    .btn-back:hover { background:var(--blue-soft); color:var(--blue); border-color:var(--blue); }
+  </style>
+</head>
+<body>
+<div class="receipt-wrap">
+  <div class="receipt-card">
+    <div class="rc-header">
+      <div class="rc-header-top">
+        <div class="rc-logo">
+          <div class="rc-logo-icon">📚</div>
+          <div class="rc-logo-name">LibAdmin</div>
+        </div>
+        <span class="rc-status {{ tx.status }}">
+          {% if tx.status == 'issued' %}📤 Issued{% else %}✅ Returned{% endif %}
+        </span>
+      </div>
+      <div class="rc-title">Library Receipt</div>
+      <div class="rc-sub">Transaction #{{ tx.id }} — Official Copy</div>
+    </div>
+
+    <div class="rc-body">
+      <div class="rc-row">
+        <span class="lbl">Member</span>
+        <span class="val">{{ tx.user_name }}</span>
+      </div>
+      <div class="rc-row">
+        <span class="lbl">Book</span>
+        <span class="val">{{ tx.book_title }}</span>
+      </div>
+      <hr class="rc-divider">
+      <div class="rc-row">
+        <span class="lbl">Issue Date</span>
+        <span class="val">{{ tx.issue_date }}</span>
+      </div>
+      <div class="rc-row">
+        <span class="lbl">Due Date</span>
+        <span class="val">{{ tx.due_date }}</span>
+      </div>
+      {% if tx.return_date %}
+      <hr class="rc-divider">
+      <div class="rc-row">
+        <span class="lbl">Returned On</span>
+        <span class="val">{{ tx.return_date }}</span>
+      </div>
+      <div class="rc-row">
+        <span class="lbl">Fine</span>
+        {% if tx.fine > 0 %}
+          <span class="val fine">₹{{ tx.fine }}</span>
+        {% else %}
+          <span class="val clear">₹0 — Clear</span>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="rc-footer">
+      <a href="/receipt/pdf/{{ tx.id }}" class="btn-download">⬇ Download PDF Receipt</a>
+      <a href="javascript:history.back()" class="btn-back">← Go Back</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

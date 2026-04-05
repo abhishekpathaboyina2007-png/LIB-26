@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --blue:#4361ee; --blue-dark:#3451d1; --blue-soft:#eef0fd; --blue-mid:#c7cef9; --red:#f03e3e; --red-soft:#fff0f0; --green:#2dc653; --green-soft:#e8f9ed; --text:#1a1f36; --sub:#6b7694; --border:#e8eaf2; --bg:#f4f6fb; --white:#ffffff; --radius:16px; }
+    body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px; }
+    body::before { content:''; position:fixed; top:-100px; right:-100px; width:400px; height:400px; background:radial-gradient(circle,#c7cef9 0%,transparent 70%); border-radius:50%; pointer-events:none; z-index:0; }
+    .wrap { display:flex; gap:24px; width:100%; max-width:860px; position:relative; z-index:1; animation:floatUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes floatUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    /* FORM CARD */
+    .form-card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); padding:36px; flex:1; box-shadow:0 8px 40px rgba(67,97,238,0.08); }
+    .fc-top { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+    .fc-icon { width:48px; height:48px; background:var(--blue-soft); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+    .fc-top h1 { font-size:22px; font-weight:800; }
+    .fc-top p  { font-size:13px; color:var(--sub); margin-top:2px; }
+    .field { margin-bottom:18px; }
+    label { display:block; font-size:12px; font-weight:700; color:var(--text); letter-spacing:0.4px; text-transform:uppercase; margin-bottom:7px; }
+    input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--text); background:var(--bg); outline:none; transition:border-color 0.2s,box-shadow 0.2s,background 0.2s; }
+    input:focus { border-color:var(--blue); background:var(--white); box-shadow:0 0 0 4px rgba(67,97,238,0.08); }
+    input::placeholder { color:var(--sub); }
+    .submit-btn { width:100%; padding:14px; border:none; border-radius:12px; background:var(--blue); color:white; font-size:15px; font-weight:700; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; margin-top:8px; transition:background 0.2s,transform 0.15s,box-shadow 0.2s; }
+    .submit-btn:hover { background:var(--blue-dark); transform:translateY(-2px); box-shadow:0 8px 20px rgba(67,97,238,0.25); }
+    .back-link { display:flex; align-items:center; justify-content:center; gap:6px; margin-top:18px; font-size:13px; color:var(--sub); text-decoration:none; transition:color 0.2s; }
+    .back-link:hover { color:var(--blue); }
+    /* RIGHT TIPS */
+    .tips-card { width:280px; flex-shrink:0; display:flex; flex-direction:column; gap:16px; }
+    .tip { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); padding:20px; transition:transform 0.2s,box-shadow 0.2s; }
+    .tip:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(67,97,238,0.08); }
+    .tip-hdr { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .tip-ico { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+    .tip h3 { font-size:13px; font-weight:700; }
+    .tip p  { font-size:12px; color:var(--sub); line-height:1.5; }
+    .tip-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    .tip-item { display:flex; gap:8px; font-size:12px; color:var(--sub); }
+    .tip-num { width:18px; height:18px; border-radius:50%; background:var(--blue-soft); color:var(--blue); font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="form-card">
+    <div class="fc-top">
+      <div class="fc-icon">📚</div>
+      <div><h1>Add New Book</h1><p>Add a book to the library catalogue</p></div>
+    </div>
+    {% if error %}<div style="padding:11px 14px;margin-bottom:18px;background:var(--red-soft);border:1px solid #ffc9c9;border-radius:10px;font-size:13px;color:var(--red);font-weight:500;">⚠️ {{ error }}</div>{% endif %}
+    <form method="POST">
+      <div class="field"><label>Book Title</label><input name="title" placeholder="e.g. The Great Gatsby" required></div>
+      <div class="field"><label>Author Name</label><input name="author" placeholder="e.g. F. Scott Fitzgerald" required></div>
+      <div class="field"><label>Genre</label><input name="genre" placeholder="e.g. Fiction, Programming..." required></div>
+      <div class="field"><label>Number of Copies</label><input name="total_copies" type="number" placeholder="e.g. 3" min="1" required></div>
+      <button type="submit" class="submit-btn">Add Book to Catalogue →</button>
+    </form>
+    <a href="/librarian" class="back-link">← Back to Dashboard</a>
+  </div>
+
+  <div class="tips-card">
+    <div class="tip">
+      <div class="tip-hdr"><div class="tip-ico" style="background:var(--blue-soft)">💡</div><h3>Tips for adding books</h3></div>
+      <ul class="tip-list">
+        <li class="tip-item"><div class="tip-num">1</div>Use the full title as printed on the book cover.</li>
+        <li class="tip-item"><div class="tip-num">2</div>Enter the primary author's full name.</li>
+        <li class="tip-item"><div class="tip-num">3</div>Choose a clear genre: Fiction, Science, etc.</li>
+        <li class="tip-item"><div class="tip-num">4</div>Copies count = total physical books you have.</li>
+      </ul>
+    </div>
+    <div class="tip">
+      <div class="tip-hdr"><div class="tip-ico" style="background:var(--green-soft)">✅</div><h3>After adding</h3></div>
+      <p>The book will immediately appear in the catalogue and be available for members to borrow.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

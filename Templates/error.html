@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Error</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --blue:#4361ee; --red:#f03e3e; --red-soft:#fff0f0; --text:#1a1f36; --sub:#6b7694; --border:#e8eaf2; --bg:#f4f6fb; --white:#ffffff; --radius:16px; }
+    body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); padding:48px 40px; width:420px; text-align:center; box-shadow:0 8px 40px rgba(67,97,238,0.08); animation:floatUp 0.5s ease forwards; }
+    @keyframes floatUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .err-icon { width:64px; height:64px; background:var(--red-soft); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px; }
+    h1 { font-size:22px; font-weight:800; margin-bottom:8px; }
+    p  { font-size:14px; color:var(--sub); line-height:1.5; margin-bottom:28px; }
+    a  { display:inline-flex; align-items:center; gap:6px; padding:12px 24px; background:var(--blue); color:white; border-radius:10px; text-decoration:none; font-size:14px; font-weight:600; transition:all 0.2s; }
+    a:hover { background:#3451d1; transform:translateY(-1px); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="err-icon">⚠️</div>
+    <h1>Oops! Something went wrong</h1>
+    <p>{{ message }}</p>
+    <a href="javascript:history.back()">← Go Back</a>
+  </div>
+</body>
+</html>

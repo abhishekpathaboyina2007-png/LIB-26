@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Books</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --blue:#4361ee; --blue-dark:#3451d1; --blue-soft:#eef0fd; --blue-mid:#c7cef9;
+      --green:#2dc653; --green-soft:#e8f9ed;
+      --red:#f03e3e; --red-soft:#fff0f0;
+      --text:#1a1f36; --sub:#6b7694; --border:#e8eaf2; --bg:#f4f6fb; --white:#ffffff;
+      --sidebar-w:240px; --radius:16px; --purple:#7c3aed;
+    }
+    body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--white); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; padding-bottom:24px; animation:slideIn 0.4s cubic-bezier(0.16,1,0.3,1); }
+    @keyframes slideIn { from{transform:translateX(-100%);opacity:0} to{transform:translateX(0);opacity:1} }
+    .sb-brand { display:flex; align-items:center; gap:10px; padding:24px 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; }
+    .sb-icon { width:36px; height:36px; background:var(--blue); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .sb-name { font-size:17px; font-weight:800; color:var(--text); }
+    .sb-name span { color:var(--blue); }
+    .sb-section { padding:6px 12px 2px; font-size:10px; font-weight:700; color:var(--sub); letter-spacing:1.2px; text-transform:uppercase; margin-top:8px; }
+    .sidebar a { display:flex; align-items:center; gap:12px; padding:10px 16px; margin:2px 10px; border-radius:10px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:500; transition:all 0.2s; }
+    .sidebar a .ico { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:15px; transition:background 0.2s; }
+    .sidebar a:hover { color:var(--blue); background:var(--blue-soft); }
+    .sidebar a:hover .ico { background:var(--blue-mid); }
+    .sidebar a.active { color:var(--blue); background:var(--blue-soft); font-weight:600; }
+    .sidebar a.active .ico { background:var(--blue); color:white; }
+    .sb-footer { margin-top:auto; padding:12px 10px 0; border-top:1px solid var(--border); }
+    .sidebar a.logout { color:var(--red); }
+    .sidebar a.logout:hover { background:var(--red-soft); color:var(--red); }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; }
+    .topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 32px; height:68px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; animation:fadeDown 0.4s ease; }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+    .tb-left h1 { font-size:20px; font-weight:700; }
+    .tb-left p  { font-size:12px; color:var(--sub); margin-top:1px; }
+    .tb-right { display:flex; align-items:center; gap:12px; }
+    .tb-btn { width:38px; height:38px; border-radius:10px; background:var(--bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:background 0.2s; }
+    .tb-btn:hover { background:var(--blue-soft); }
+    .tb-avatar { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,var(--blue),var(--purple)); display:flex; align-items:center; justify-content:center; color:white; font-size:14px; font-weight:700; }
+    .content { padding:28px 32px; flex:1; }
+    @keyframes floatUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    .card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; animation:floatUp 0.5s ease 0.1s both; }
+    /* SEARCH BAR */
+    .search-wrap { padding:20px 22px 0; }
+    .search-bar { display:flex; border-radius:12px; overflow:hidden; border:1.5px solid var(--border); transition:border-color 0.2s; }
+    .search-bar:focus-within { border-color:var(--blue); box-shadow:0 0 0 4px rgba(67,97,238,0.08); }
+    .search-bar input {
+      flex:1; padding:13px 18px; border:none; outline:none;
+      font-size:14px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--text);
+      background:var(--bg);
+    }
+    .search-bar input::placeholder { color:var(--sub); }
+    .search-bar button {
+      padding:13px 26px; border:none; background:var(--blue); color:white;
+      font-weight:700; font-size:14px; font-family:'Plus Jakarta Sans',sans-serif;
+      cursor:pointer; transition:background 0.2s; letter-spacing:0.3px;
+    }
+    .search-bar button:hover { background:var(--blue-dark); }
+    /* RESULT SUMMARY */
+    .result-summary { padding:12px 22px 0; font-size:13px; color:var(--sub); }
+    .result-summary strong { color:var(--text); }
+    /* TABLE */
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    thead tr { background:var(--bg); }
+    th { text-align:left; padding:11px 22px; font-size:11px; font-weight:700; color:var(--sub); text-transform:uppercase; letter-spacing:0.8px; border-bottom:1px solid var(--border); }
+    td { padding:13px 22px; font-size:13.5px; border-bottom:1px solid var(--border); vertical-align:middle; }
+    tbody tr { transition:background 0.15s; animation:fadeRow 0.35s ease both; }
+    tbody tr:hover { background:var(--bg); }
+    tbody tr:last-child td { border-bottom:none; }
+    tbody tr:nth-child(1){animation-delay:0.2s} tbody tr:nth-child(2){animation-delay:0.25s}
+    tbody tr:nth-child(3){animation-delay:0.3s} tbody tr:nth-child(4){animation-delay:0.35s}
+    tbody tr:nth-child(5){animation-delay:0.4s} tbody tr:nth-child(6){animation-delay:0.45s}
+    @keyframes fadeRow { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+    .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+    .badge.genre   { background:var(--blue-soft);  color:var(--blue);  border:1px solid rgba(67,97,238,0.15); }
+    .badge.avail   { background:var(--green-soft); color:var(--green); border:1px solid rgba(45,198,83,0.2); }
+    .badge.noavail { background:var(--red-soft);   color:var(--red);   border:1px solid rgba(240,62,62,0.2); }
+    .status-pill { display:inline-flex; align-items:center; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+    .status-pill.yes { background:var(--green-soft); color:var(--green); }
+    .status-pill.no  { background:var(--red-soft);   color:var(--red); }
+    .empty { text-align:center; padding:50px; color:var(--sub); }
+    .empty p { font-size:22px; margin-bottom:8px; }
+    .empty span { font-size:13px; }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-icon">📚</div>
+    <div class="sb-name">Lib<span>Admin</span></div>
+  </div>
+  <div class="sb-section">Menu</div>
+  <a href="/member"><div class="ico">🏠</div> Dashboard</a>
+  <a href="/member/search_books" class="active"><div class="ico">🔍</div> Search Books</a>
+  <div class="sb-footer">
+    <a href="/logout" class="logout"><div class="ico">🚪</div> Logout</a>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="tb-left">
+      <h1>Search Books</h1>
+      <p>Browse the full library catalogue</p>
+    </div>
+    <div class="tb-right">
+      <div class="tb-btn">🔔</div>
+      <div class="tb-avatar">M</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="card">
+      <div class="search-wrap">
+        <form method="POST" class="search-bar">
+          <input name="query" placeholder="🔍 Search by title, author, or genre...">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <div class="result-summary">
+        Showing <strong>{{ books|length }}</strong> book{{ 's' if books|length != 1 }}
+      </div>
+
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Genre</th>
+              <th>Total</th>
+              <th>Available</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in books %}
+            <tr>
+              <td><strong>{{ b.title }}</strong></td>
+              <td style="color:var(--sub)">{{ b.author }}</td>
+              <td><span class="badge genre">{{ b.genre }}</span></td>
+              <td style="color:var(--sub)">{{ b.total_copies }}</td>
+              <td>
+                {% if b.available_copies > 0 %}
+                  <span class="badge avail">{{ b.available_copies }}</span>
+                {% else %}
+                  <span class="badge noavail">0</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if b.available_copies > 0 %}
+                  <span class="status-pill yes">● Available</span>
+                {% else %}
+                  <span class="status-pill no">✕ Unavailable</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+            {% if books|length == 0 %}
+            <tr><td colspan="6"><div class="empty"><p>😶</p><span>No books found — try a different search</span></div></td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

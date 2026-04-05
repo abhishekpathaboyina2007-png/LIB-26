@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create User</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --blue:#4361ee; --blue-dark:#3451d1; --blue-soft:#eef0fd; --blue-mid:#c7cef9; --green:#2dc653; --green-soft:#e8f9ed; --red:#f03e3e; --red-soft:#fff0f0; --purple:#7c3aed; --purple-soft:#f3f0ff; --text:#1a1f36; --sub:#6b7694; --border:#e8eaf2; --bg:#f4f6fb; --white:#ffffff; --radius:16px; }
+    body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px; }
+    body::before { content:''; position:fixed; bottom:-100px; right:-80px; width:380px; height:380px; background:radial-gradient(circle,#f3f0ff 0%,transparent 70%); border-radius:50%; pointer-events:none; z-index:0; }
+    .wrap { display:flex; gap:24px; width:100%; max-width:860px; position:relative; z-index:1; animation:floatUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes floatUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    .form-card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); padding:36px; flex:1; box-shadow:0 8px 40px rgba(67,97,238,0.08); }
+    .fc-top { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+    .fc-icon { width:48px; height:48px; background:var(--purple-soft); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+    .fc-top h1 { font-size:22px; font-weight:800; }
+    .fc-top p  { font-size:13px; color:var(--sub); margin-top:2px; }
+    .field { margin-bottom:18px; }
+    label { display:block; font-size:12px; font-weight:700; color:var(--text); letter-spacing:0.4px; text-transform:uppercase; margin-bottom:7px; }
+    input, select { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--text); background:var(--bg); outline:none; transition:border-color 0.2s,box-shadow 0.2s,background 0.2s; appearance:none; }
+    input:focus, select:focus { border-color:var(--blue); background:var(--white); box-shadow:0 0 0 4px rgba(67,97,238,0.08); }
+    input::placeholder { color:var(--sub); }
+    select { cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7694' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; }
+    .submit-btn { width:100%; padding:14px; border:none; border-radius:12px; background:var(--blue); color:white; font-size:15px; font-weight:700; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; margin-top:8px; transition:background 0.2s,transform 0.15s,box-shadow 0.2s; }
+    .submit-btn:hover { background:var(--blue-dark); transform:translateY(-2px); box-shadow:0 8px 20px rgba(67,97,238,0.25); }
+    .back-link { display:flex; align-items:center; justify-content:center; gap:6px; margin-top:18px; font-size:13px; color:var(--sub); text-decoration:none; transition:color 0.2s; }
+    .back-link:hover { color:var(--blue); }
+    /* ROLE CARDS */
+    .roles-card { width:270px; flex-shrink:0; display:flex; flex-direction:column; gap:12px; }
+    .role-card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); padding:18px; display:flex; gap:12px; align-items:flex-start; transition:transform 0.2s,box-shadow 0.2s; }
+    .role-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(67,97,238,0.08); }
+    .rc-ico { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .rc-name { font-size:13px; font-weight:700; margin-bottom:4px; }
+    .rc-desc { font-size:12px; color:var(--sub); line-height:1.4; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="form-card">
+    <div class="fc-top">
+      <div class="fc-icon">👤</div>
+      <div><h1>Create User</h1><p>Add a new user to the system</p></div>
+    </div>
+    {% if error %}<div style="padding:11px 14px;margin-bottom:18px;background:var(--red-soft);border:1px solid #ffc9c9;border-radius:10px;font-size:13px;color:var(--red);font-weight:500;">⚠️ {{ error }}</div>{% endif %}
+    <form method="POST">
+      <div class="field"><label>Full Name</label><input name="name" placeholder="e.g. John Doe" required></div>
+      <div class="field"><label>Email Address</label><input name="email" type="email" placeholder="john@example.com" required></div>
+      <div class="field"><label>Password</label><input name="password" type="password" placeholder="Set a password" required></div>
+      <div class="field">
+        <label>Role</label>
+        <select name="role">
+          <option value="member">👤 Member</option>
+          <option value="librarian">📚 Librarian</option>
+          <option value="admin">👑 Admin</option>
+        </select>
+      </div>
+      <button type="submit" class="submit-btn">Create User →</button>
+    </form>
+    <a href="/admin" class="back-link">← Back to Dashboard</a>
+  </div>
+
+  <div class="roles-card">
+    <div class="role-card">
+      <div class="rc-ico" style="background:var(--blue-soft)">👑</div>
+      <div><div class="rc-name" style="color:var(--blue)">Admin</div><div class="rc-desc">Full system access — manage users, roles and all settings.</div></div>
+    </div>
+    <div class="role-card">
+      <div class="rc-ico" style="background:var(--green-soft)">📚</div>
+      <div><div class="rc-name" style="color:var(--green)">Librarian</div><div class="rc-desc">Manage the catalogue, issue and return books, generate receipts.</div></div>
+    </div>
+    <div class="role-card">
+      <div class="rc-ico" style="background:var(--purple-soft)">👤</div>
+      <div><div class="rc-name" style="color:var(--purple)">Member</div><div class="rc-desc">Browse books, view borrowing history and check fines.</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
