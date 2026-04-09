@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, flash
 import sqlite3
 from datetime import datetime, timedelta
-import qrcode
 from io import BytesIO
 from flask import send_file
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
