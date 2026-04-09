@@ -15,7 +15,7 @@ app.secret_key = "your-secret-key-change-this"
 def inject_session():
     return dict(session=session)
 
-# ── DB ──────────────────────────────────────────────
+# ── DB
 def db():
     conn = sqlite3.connect("library.db")
     conn.row_factory = sqlite3.Row
@@ -80,7 +80,7 @@ def seed():
         )
     conn.commit()
 
-# ── AUTH DECORATORS ─────────────────────────────────
+# ── AUTH DECORATORS
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -99,7 +99,7 @@ def role_required(*roles):
         return decorated
     return decorator
 
-# ── AUTH ─────────────────────────────────────────────
+# ── AUTH
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if 'id' in session:
@@ -155,7 +155,7 @@ def logout():
     session.clear()
     return redirect('/')
 
-# ── ADMIN ─────────────────────────────────────────────
+# ── ADMIN
 @app.route('/admin')
 @login_required
 @role_required('admin')
@@ -222,7 +222,7 @@ def assign_role(user_id):
     conn.commit()
     return redirect('/admin')
 
-# ── LIBRARIAN ─────────────────────────────────────────
+# ── LIBRARIAN
 @app.route('/librarian')
 @login_required
 @role_required('librarian', 'admin')
@@ -373,7 +373,7 @@ def return_book(id):
     conn.commit()
     return redirect('/librarian')
 
-# ── MEMBER ────────────────────────────────────────────
+# ── MEMBER 
 @app.route('/member')
 @login_required
 @role_required('member')
@@ -407,7 +407,7 @@ def search():
 
     return render_template("search_books.html", books=books)
 
-# ── RECEIPT ───────────────────────────────────────────
+# ── RECEIPT
 @app.route('/receipt/<int:tx_id>')
 @login_required
 def receipt(tx_id):
@@ -468,7 +468,7 @@ def receipt_pdf(tx_id):
     return send_file(pdf_io, as_attachment=True, download_name="receipt.pdf",
                      mimetype='application/pdf')
 
-# ── ERROR PAGE ────────────────────────────────────────
+# ── ERROR PAGE
 @app.errorhandler(404)
 def not_found(e):
     return render_template("error.html", message="Page not found."), 404
@@ -477,7 +477,7 @@ def not_found(e):
 def server_error(e):
     return render_template("error.html", message="Something went wrong."), 500
 
-# ── RUN ───────────────────────────────────────────────
+# ── RUN 
 if __name__ == "__main__":
     init_db()
     seed()
